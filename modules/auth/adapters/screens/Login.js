@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 import React, { useState } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Input, Button, Image, Icon } from "@rneui/base";
 import { isEmpty } from "lodash";
 import Loading from "../../../../kernel/components/Loading";
@@ -8,7 +8,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login(props) {
   const { navigation } = props;
-  const [error, setError] = useState({email: '', password: ''});
+  const [error, setError] = useState({ email: "", password: "" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
@@ -19,20 +19,19 @@ export default function Login(props) {
   const login = () => {
     if (!(isEmpty(email) && isEmpty(password))) {
       setShow(true);
-      setError({email: '', password: 'Usuario o contraseña incorrectos'});
+      setError({ email: "", password: "Usuario o contraseña incorrectos" });
       signInWithEmailAndPassword(auth, email, password)
-        .then( async (userCredential) => {
+        .then(async (userCredential) => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
           setShow(false);
-          //navigation.navigate("userGuestStack"); 
+          //navigation.navigate("userGuestStack");
           try {
-            await AsyncStorage.setItem('@session', JSON.stringify(user))
+            await AsyncStorage.setItem("@session", JSON.stringify(user));
           } catch (e) {
             console.log("error al guardar la sesion", e);
           }
-          
         })
         .catch((error) => {
           setShow(false);
@@ -42,13 +41,16 @@ export default function Login(props) {
           // ..
         });
     } else {
-      setError({email: 'El email es obligatorio', password: 'La contraseña es obligatoria'});
+      setError({
+        email: "El email es obligatorio",
+        password: "La contraseña es obligatoria",
+      });
     }
   };
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.container}>
-      <Image
+    <View style={styles.container}>
+      <ScrollView>
+        <Image
           source={require("../../../../assets/airbnb.png")}
           resizeMode="contain"
           style={styles.logotype}
@@ -98,9 +100,9 @@ export default function Login(props) {
           onPress={login}
         />
         <Loading show={show} text="Iniciando Sesión, awanta ya casi" />
-      </View>
-    </ScrollView>
-  )
+      </ScrollView>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
