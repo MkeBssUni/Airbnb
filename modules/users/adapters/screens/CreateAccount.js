@@ -8,6 +8,7 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { validateEmail } from '../../../../kernel/validations';
 
 export default function CreateAccount() {
+  const auth = getAuth();
   const payload = {
     email: "",
     password: "",
@@ -25,8 +26,6 @@ export default function CreateAccount() {
       [type]: e.nativeEvent.text,
     });
   };
-
-  const auth = getAuth();
 
   const createUser = () => {
     if (!(isEmpty(data.email) || isEmpty(data.password))) {
