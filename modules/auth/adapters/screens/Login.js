@@ -1,13 +1,16 @@
 import { StyleSheet, Text, View, ScrollView } from "react-native";
-import React, { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useState, useEffect } from "react";
 import { Input, Button, Image, Icon } from "@rneui/base";
 import { isEmpty } from "lodash";
 import Loading from "../../../../kernel/components/Loading";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import UserNavigation from "../../../../config/navigation/UserNavigation";
+import Navigation from "../../../../config/navigation/Navigation";
 
 export default function Login(props) {
   const { navigation } = props;
+  const [user, setUser] = useState(null);
+  const [session, setSession]= useState("");
   const [error, setError] = useState({ email: "", password: "" });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,34 +22,24 @@ export default function Login(props) {
   const login = () => {
     if (!(isEmpty(email) && isEmpty(password))) {
       setShow(true);
-      setError({ email: "", password: "Usuario o contraseña incorrectos" });
+      setError({email: '', password: 'Usuario o contraseña incorrectos'});
       signInWithEmailAndPassword(auth, email, password)
-        .then(async (userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          console.log(user);
+        .then( async (userCredential) => {
           setShow(false);
-          //navigation.navigate("userGuestStack");
-          try {
-            await AsyncStorage.setItem("@session", JSON.stringify(user));
-          } catch (e) {
-            console.log("error al guardar la sesion", e);
-          }
+          console.log("inicia")
+          const user = userCredential.user.uid;
+          console.log(user)
         })
         .catch((error) => {
           setShow(false);
           const errorCode = error.code;
           const errorMessage = error.message;
-
-          // ..
         });
     } else {
-      setError({
-        email: "El email es obligatorio",
-        password: "La contraseña es obligatoria",
-      });
+      setError({email: 'El email es obligatorio', password: 'La contraseña es obligatoria'});
     }
   };
+
   return (
     <View style={styles.container}>
       <ScrollView>

@@ -6,9 +6,9 @@ import { Image, Input, Button, Icon } from "@rneui/base";
 import Loading from "../../../../kernel/components/Loading";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { validateEmail } from '../../../../kernel/validations';
+import axios from '../../../../kernel/http-client.gateway'
 
-export default function CreateAccount() {
-  const auth = getAuth();
+export default function CreateAccount(props) {
   const payload = {
     email: "",
     password: "",
@@ -27,6 +27,8 @@ export default function CreateAccount() {
     });
   };
 
+  const auth= getAuth();
+
   const createUser = () => {
     if (!(isEmpty(data.email) || isEmpty(data.password))) {
       if (validateEmail(data.email)) {
@@ -41,13 +43,10 @@ export default function CreateAccount() {
                 const user = userCredential.user;
                 console.log("Usuario creado")
                 setShow(false);
-                navigation.navigate('profileStack');
               })  
               .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-
-                // ..
               });
           } else {
             setError({
